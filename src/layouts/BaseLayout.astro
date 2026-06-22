@@ -1,11 +1,5 @@
 ---
-// Learn about using Astro layouts:
-// https://docs.astro.build/en/basics/layouts/
-
-import Footer from '../components/Footer.astro';
-// Component Imports
 import MainHead from '../components/MainHead.astro';
-import Nav from '../components/Nav.astro';
 
 interface Props {
 	title?: string | undefined;
@@ -13,6 +7,15 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+
+const navLinks = [
+	{ label: 'Index', href: '#top' },
+	{ label: 'Projects', href: '#projects' },
+	{ label: 'About', href: '#about' },
+	{ label: 'Contact', href: '#contact' },
+];
+
+const year = new Date().getFullYear();
 ---
 
 <html lang="en">
@@ -20,98 +23,116 @@ const { title, description } = Astro.props;
 		<MainHead title={title} description={description} />
 	</head>
 	<body>
-		<div class="stack backgrounds">
-			<Nav />
-			<slot />
-			<Footer />
-		</div>
+		<!-- CRT scanline + vignette overlay -->
+		<div class="crt" aria-hidden="true"></div>
 
-		<script>
-			// Add “loaded” class once the document has completely loaded.
-			addEventListener('load', () => document.documentElement.classList.add('loaded'));
-		</script>
+		<header class="topbar">
+			<a class="brand" href="#top">
+				<span class="prompt">&gt;</span> N.GARZIONE
+			</a>
+			<nav class="nav" aria-label="Primary">
+				{navLinks.map(({ label, href }) => <a href={href}>{label}</a>)}
+			</nav>
+		</header>
+
+		<main id="top">
+			<slot />
+		</main>
+
+		<footer class="statusline">
+			<div class="wrapper statusline-inner">
+				<span>&copy; {year} NICOLAS GARZIONE</span>
+				<span class="muted">SYS: ONLINE // BUILT WITH ASTRO</span>
+			</div>
+		</footer>
 
 		<style>
-			:root {
-				--_placeholder-bg: linear-gradient(transparent, transparent);
-				--bg-image-main: url('/assets/backgrounds/bg-main-light-800w.jpg');
-				--bg-image-main-curves: url('/assets/backgrounds/bg-main-light.svg');
-				--bg-image-subtle-1: var(--_placeholder-bg);
-				--bg-image-subtle-2: var(--_placeholder-bg);
-				--bg-image-footer: var(--_placeholder-bg);
-				--bg-svg-blend-mode: overlay;
-				--bg-blend-mode: darken;
-				--bg-image-aspect-ratio: 2.25;
-				--bg-scale: 1.68;
-				--bg-aspect-ratio: calc(var(--bg-image-aspect-ratio) / var(--bg-scale));
-				--bg-gradient-size: calc(var(--bg-scale) * 100%);
+			.crt {
+				position: fixed;
+				inset: 0;
+				z-index: 9998;
+				pointer-events: none;
+				/* horizontal scanlines */
+				background: repeating-linear-gradient(
+					to bottom,
+					rgba(0, 0, 0, 0) 0,
+					rgba(0, 0, 0, 0) 2px,
+					rgba(0, 0, 0, 0.18) 3px,
+					rgba(0, 0, 0, 0.18) 3px
+				);
+				mix-blend-mode: multiply;
+			}
+			.crt::after {
+				/* corner vignette */
+				content: '';
+				position: absolute;
+				inset: 0;
+				background: radial-gradient(
+					ellipse at center,
+					transparent 55%,
+					rgba(0, 0, 0, 0.55) 100%
+				);
 			}
 
-			:root.theme-dark {
-				--bg-image-main: url('/assets/backgrounds/bg-main-dark-800w.jpg');
-				--bg-image-main-curves: url('/assets/backgrounds/bg-main-dark.svg');
-				--bg-svg-blend-mode: darken;
-				--bg-blend-mode: lighten;
+			.topbar {
+				position: sticky;
+				top: 0;
+				z-index: 100;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 1rem;
+				flex-wrap: wrap;
+				padding: 0.75rem var(--gutter);
+				background: rgba(10, 10, 8, 0.92);
+				border-bottom: 1px solid var(--line);
+				backdrop-filter: blur(4px);
+			}
+			.brand {
+				font-weight: 800;
+				letter-spacing: 0.18em;
+				color: var(--amber);
+			}
+			.brand:hover {
+				text-decoration: none;
+			}
+			.prompt {
+				color: var(--red);
+			}
+			.nav {
+				display: flex;
+				gap: 1.1rem;
+				flex-wrap: wrap;
+				font-size: var(--text-sm);
+				letter-spacing: 0.12em;
+				text-transform: uppercase;
+			}
+			.nav a {
+				color: var(--fg-dim);
+			}
+			.nav a:hover {
+				color: var(--amber);
+				text-decoration: none;
 			}
 
-			/* These backgrounds are displayed below the fold, so we lazy load them
-			   once the `.loaded` class has been set.  */
-			:root.loaded {
-				--bg-image-subtle-1: url('/assets/backgrounds/bg-subtle-1-light-800w.jpg');
-				--bg-image-subtle-2: url('/assets/backgrounds/bg-subtle-2-light-800w.jpg');
-				--bg-image-footer: url('/assets/backgrounds/bg-footer-light-800w.jpg');
+			.statusline {
+				margin-top: 4rem;
+				border-top: 1px solid var(--line);
+				background: var(--bg-panel);
+				font-size: var(--text-xs);
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				color: var(--fg-dim);
 			}
-			:root.loaded.theme-dark {
-				--bg-image-subtle-1: url('/assets/backgrounds/bg-subtle-1-dark-800w.jpg');
-				--bg-image-subtle-2: url('/assets/backgrounds/bg-subtle-2-dark-800w.jpg');
-				--bg-image-footer: url('/assets/backgrounds/bg-footer-dark-800w.jpg');
+			.statusline-inner {
+				display: flex;
+				justify-content: space-between;
+				gap: 1rem;
+				flex-wrap: wrap;
+				padding-block: 1rem;
 			}
-
-			@media (min-width: 50em) {
-				:root {
-					--bg-scale: 1;
-					--bg-image-main: url('/assets/backgrounds/bg-main-light-1440w.jpg');
-				}
-				:root.theme-dark {
-					--bg-image-main: url('/assets/backgrounds/bg-main-dark-1440w.jpg');
-				}
-
-				:root.loaded {
-					--bg-image-subtle-1: url('/assets/backgrounds/bg-subtle-1-light-1440w.jpg');
-					--bg-image-subtle-2: url('/assets/backgrounds/bg-subtle-2-light-1440w.jpg');
-					--bg-image-footer: url('/assets/backgrounds/bg-footer-light-1440w.jpg');
-				}
-				:root.loaded.theme-dark {
-					--bg-image-subtle-1: url('/assets/backgrounds/bg-subtle-1-dark-1440w.jpg');
-					--bg-image-subtle-2: url('/assets/backgrounds/bg-subtle-2-dark-1440w.jpg');
-					--bg-image-footer: url('/assets/backgrounds/bg-footer-dark-1440w.jpg');
-				}
-			}
-
-			.backgrounds {
-				min-height: 100%;
-				isolation: isolate;
-				background:
-					/*noise*/
-					url('/assets/backgrounds/noise.png') top center/220px repeat,
-					/*footer*/ var(--bg-image-footer) bottom center/var(--bg-gradient-size) no-repeat,
-					/*header1*/ var(--bg-image-main-curves) top center/var(--bg-gradient-size) no-repeat,
-					/*header2*/ var(--bg-image-main) top center/var(--bg-gradient-size) no-repeat,
-					/*base*/ var(--gray-999);
-				background-blend-mode: /*noise*/
-					overlay,
-					/*footer*/ var(--bg-blend-mode),
-					/*header1*/ var(--bg-svg-blend-mode),
-					/*header2*/ normal,
-					/*base*/ normal;
-			}
-			@media (forced-colors: active) {
-				/* Deactivate custom backgrounds for high contrast users. */
-				.backgrounds {
-					background: none;
-					background-blend-mode: none;
-					--bg-gradient-size: none;
-				}
+			.muted {
+				color: var(--amber-dim);
 			}
 		</style>
 	</body>

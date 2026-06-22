@@ -1,249 +1,458 @@
 ---
-import { getCollection } from 'astro:content';
-// Component Imports
-import CallToAction from '../components/CallToAction.astro';
-// Page section components
-import ContactCTA from '../components/ContactCTA.astro';
-import Grid from '../components/Grid.astro';
-import Hero from '../components/Hero.astro';
-import Icon from '../components/Icon.astro';
-import Pill from '../components/Pill.astro';
-import PortfolioPreview from '../components/PortfolioPreview.astro';
-import Skills from '../components/Skills.astro';
-// Layout import — provides basic page elements: <head>, <nav>, <footer> etc.
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Content Fetching: List four most recent work projects
-const projects = (await getCollection('work'))
-	.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
-	.slice(0, 4);
+const GITHUB = 'https://github.com/nicolasgarzione';
 
-// Full Astro Component Syntax:
-// https://docs.astro.build/basics/astro-components/
+// Selected projects. Each links to its most relevant resource (code, article, etc.).
+const projects: {
+	name: string;
+	year: string;
+	lang: string;
+	blurb: string;
+	href: string;
+	linkText: string;
+}[] = [
+	{
+		name: 'autonomous-race-car',
+		year: '2023',
+		lang: 'PYTHON',
+		blurb:
+			'A self-driving 1/10th-scale race car — depth camera, IMU, and ROS for perception and control through tight corridors. (Advanced Robotics)',
+		href: 'https://github.com/nishantb21/autonav',
+		linkText: 'CODE',
+	},
+	{
+		name: 'robot-bartender',
+		year: '2022',
+		lang: 'PYTHON',
+		blurb: 'A robotic bartender built for a graduate mechatronics & robotics course.',
+		href: `${GITHUB}/robot-bartender`,
+		linkText: 'CODE',
+	},
+	{
+		name: 'self-balance-robot',
+		year: '2022',
+		lang: 'C++',
+		blurb: 'An inverted-pendulum robot stabilized with a PID controller.',
+		href: `${GITHUB}/self-balance-robot`,
+		linkText: 'CODE',
+	},
+	{
+		name: 'rocket-league-robot',
+		year: '2021',
+		lang: 'C++',
+		blurb: 'An autonomous soccer-playing robot built for a mechatronics & robotics course.',
+		href: `${GITHUB}/rocket-league-robot`,
+		linkText: 'CODE',
+	},
+	{
+		name: 'helical-antenna',
+		year: '2022',
+		lang: 'MECH',
+		blurb:
+			'Senior-design capstone sponsored by an aerospace company: a 10-person team designed, built, and tested (vibration, shock, RF) a deployable helical antenna for small satellites.',
+		href: 'https://www.colorado.edu/mechanical/2022/05/02/deployable-antenna-could-provide-more-powerful-communications-smaller-space-satellites',
+		linkText: 'ARTICLE',
+	},
+	{
+		name: 'kinetic-sculpture',
+		year: '2020',
+		lang: 'MECH',
+		blurb:
+			'A team-of-four Component Design project: a kinetic sculpture showcasing mechanism design as a visually striking art piece.',
+		href: 'https://youtu.be/OqT66rBMaQs',
+		linkText: 'VIDEO',
+	},
+];
 ---
 
 <BaseLayout>
-	<div class="stack gap-20 lg:gap-48">
-		<div class="wrapper stack gap-8 lg:gap-20">
-			<header class="hero">
-				<Hero
-					title="Hello, my name is Jeanine White"
-					tagline="I am a Creative Developer who is currently based in Portland, Oregon."
-					align="start"
-				>
-					<div class="roles">
-						<Pill><Icon icon="code" size="1.33em" /> Developer</Pill>
-						<Pill><Icon icon="microphone-stage" size="1.33em" /> Speaker</Pill>
-						<Pill><Icon icon="pencil-line" size="1.33em" /> Writer</Pill>
-					</div>
-				</Hero>
+	<!-- ============ HERO ============ -->
+	<section class="hero wrapper">
+		<div class="hazard hero-hazard"></div>
+		<p class="eyebrow">// INDEX</p>
+		<h1>NICOLAS<br />GARZIONE</h1>
+		<p class="role">ROBOTICS &nbsp;&middot;&nbsp; CONTROLS &nbsp;&middot;&nbsp; HUMAN-ROBOT INTERACTION</p>
 
-				<img
-					alt="Jeanine White smiling in a red plaid shirt and tortoise shell glasses"
-					width="480"
-					height="620"
-					src="/assets/portrait.jpg"
-				/>
-			</header>
-
-			<Skills />
+		<div class="boot panel">
+			<p><span class="ok">&gt;</span> initializing portfolio<span class="dots"></span></p>
+			<p>
+				<span class="ok">&gt;</span> Robotics &amp; controls engineer building systems deployed in the real world.
+			</p>
+			<p class="cursor"><span class="ok">&gt;</span>&nbsp;</p>
 		</div>
 
-		<main class="wrapper stack gap-20 lg:gap-48">
-			<section class="section with-background with-cta">
-				<header class="section-header stack gap-2 lg:gap-4">
-					<h3>Selected Work</h3>
-					<p>Take a look below at some of my featured work for clients from the past few years.</p>
-				</header>
+		<div class="cta-row">
+			<a class="btn" href="#projects">VIEW PROJECTS</a>
+			<a class="btn ghost" href="#contact">CONTACT</a>
+		</div>
+	</section>
 
-				<div class="gallery">
-					<Grid variant="offset">
-						{
-							projects.map((project) => (
-								<li>
-									<PortfolioPreview project={project} />
-								</li>
-							))
-						}
-					</Grid>
-				</div>
+	<!-- ============ PROJECTS ============ -->
+	<section id="projects" class="section wrapper">
+		<div class="section-head">
+			<h2>// PROJECTS</h2>
+			<span class="count">[ {projects.length.toString().padStart(2, '0')} RECORDS ]</span>
+		</div>
 
-				<div class="cta">
-					<CallToAction href="/work/">
-						View All
-						<Icon icon="arrow-right" size="1.2em" />
-					</CallToAction>
-				</div>
-			</section>
+		<ul class="grid">
+			{
+				projects.map((p, i) => (
+					<li class="panel card">
+						<div class="card-top">
+							<span class="idx">{(i + 1).toString().padStart(2, '0')}</span>
+							<span class="tag">{p.lang}</span>
+						</div>
+						<h3 class="card-name">{p.name}</h3>
+						<p class="card-blurb">{p.blurb}</p>
+						<div class="card-foot">
+							<span class="muted">{p.year}</span>
+							{
+								p.href ? (
+									<a href={p.href} target="_blank" rel="noopener">
+										{p.linkText} &rsaquo;
+									</a>
+								) : (
+									<span class="muted">{p.linkText}</span>
+								)
+							}
+						</div>
+					</li>
+				))
+			}
+			<li class="card placeholder-card" aria-hidden="true">
+				<span class="ph-plus">+</span>
+				<span class="ph-text">MORE TO COME</span>
+				<span class="ph-sub">// under construction</span>
+			</li>
+		</ul>
+	</section>
 
-			<section class="section with-background bg-variant">
-				<header class="section-header stack gap-2 lg:gap-4">
-					<h3>Mentions</h3>
-					<p>
-						I have been fortunate enough to receive praise for my work in several publications. Take
-						a look below to learn more.
-					</p>
-				</header>
+	<!-- ============ ABOUT ============ -->
+	<section id="about" class="section wrapper">
+		<div class="section-head">
+			<h2>// ABOUT</h2>
+		</div>
+		<div class="panel about">
+			<p><span class="amber">$</span> whoami</p>
+			<p>
+				Senior robotics engineer at Anduril Industries. My work is about getting robots
+				out of the lab and into the field &mdash; building and deploying systems that have to
+				work reliably in demanding, real-world conditions, frequently completely offline, where
+				failure isn&rsquo;t an option.
+			</p>
 
-				<div class="gallery">
-					<Grid variant="small">
-						{
-							['Medium', 'BuzzFeed', 'The Next Web', 'awwwards.', 'TechCrunch'].map((brand) => (
-								<li class="mention-card">
-									<p>{brand}</p>
-								</li>
-							))
-						}
-					</Grid>
-				</div>
-			</section>
-		</main>
+			<p class="about-cmd"><span class="amber">$</span> cat goals.txt</p>
+			<p>
+				That experience taught me what practical robotics actually takes, and it pulled my
+				focus toward <strong>human-robot interaction</strong> &mdash; how people and autonomous
+				systems perceive one another, build trust, and work together. It&rsquo;s the direction
+				I&rsquo;m steering my career: designing robots that work <em>with</em> people, not just
+				around them.
+			</p>
 
-		<ContactCTA />
-	</div>
+			<p class="about-cmd"><span class="amber">$</span> cat education.txt</p>
+			<p>
+				M.S. Mechanical Engineering, Robotics &amp; Controls &middot; University of Colorado Boulder<br
+				/>
+				B.S. Mechanical Engineering &middot; University of Colorado Boulder
+			</p>
+
+			<p class="about-cmd"><span class="amber">$</span> cat skills.txt</p>
+			<ul class="skills">
+				<li><span class="skills-key">LANG</span> Rust &middot; C++ &middot; Python &middot; Go &middot; MATLAB</li>
+				<li>
+					<span class="skills-key">ROBOTICS</span> ROS &middot; Control Systems &middot; Motion Planning &middot;
+					State Estimation
+				</li>
+				<li><span class="skills-key">TOOLS</span> Linux &middot; Git &middot; Nix &middot; SolidWorks</li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- ============ CONTACT ============ -->
+	<section id="contact" class="section wrapper">
+		<div class="section-head">
+			<h2>// CONTACT</h2>
+		</div>
+		<div class="panel contact">
+			<a class="contact-row" href={GITHUB} target="_blank" rel="noopener">
+				<span class="contact-key">GITHUB</span>
+				<span class="contact-val">github.com/nicolasgarzione</span>
+			</a>
+			<a class="contact-row" href="https://www.linkedin.com/in/nicolas-garzione/" target="_blank" rel="noopener">
+				<span class="contact-key">LINKEDIN</span>
+				<span class="contact-val">linkedin.com/in/nicolas-garzione</span>
+			</a>
+			<a class="contact-row" href="mailto:nicolas.garzione@gmail.com">
+				<span class="contact-key">EMAIL</span>
+				<span class="contact-val">nicolas.garzione@gmail.com</span>
+			</a>
+		</div>
+	</section>
 </BaseLayout>
 
 <style>
+	/* ---------- Hero ---------- */
 	.hero {
+		padding-top: 3.5rem;
+		padding-bottom: 2rem;
+	}
+	.hero-hazard {
+		max-width: 14rem;
+		margin-bottom: 1.5rem;
+	}
+	.hero h1 {
+		margin-block: 0.5rem 0.75rem;
+	}
+	.role {
+		color: var(--fg-dim);
+		letter-spacing: 0.18em;
+		font-size: var(--text-sm);
+		text-transform: uppercase;
+		margin-bottom: 2rem;
+	}
+	.boot {
+		max-width: 44rem;
+		line-height: 1.9;
+		font-size: var(--text-sm);
+	}
+	.boot p + p {
+		margin-top: 0.4rem;
+	}
+	.ok {
+		color: var(--amber);
+	}
+	.dots::after {
+		content: '...';
+		animation: dots 1.6s steps(4) infinite;
+	}
+	@keyframes dots {
+		0% {
+			content: '';
+		}
+		25% {
+			content: '.';
+		}
+		50% {
+			content: '..';
+		}
+		75% {
+			content: '...';
+		}
+	}
+	.cta-row {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+		margin-top: 2rem;
+	}
+	.btn {
+		display: inline-block;
+		padding: 0.7rem 1.4rem;
+		border: 1px solid var(--amber);
+		color: var(--amber);
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		font-size: var(--text-sm);
+		clip-path: polygon(0 0, calc(100% - 0.6rem) 0, 100% 0.6rem, 100% 100%, 0.6rem 100%, 0 calc(100% - 0.6rem));
+	}
+	.btn:hover {
+		background: var(--amber);
+		color: var(--bg);
+		text-decoration: none;
+	}
+	.btn.ghost {
+		border-color: var(--line-strong);
+		color: var(--fg-dim);
+	}
+	.btn.ghost:hover {
+		background: transparent;
+		color: var(--amber);
+		border-color: var(--amber);
+	}
+
+	/* ---------- Sections ---------- */
+	.section {
+		padding-top: 3.5rem;
+	}
+	.section-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		border-bottom: 1px solid var(--line);
+		padding-bottom: 0.6rem;
+		margin-bottom: 1.75rem;
+	}
+	.count {
+		color: var(--amber-dim);
+		font-size: var(--text-sm);
+		letter-spacing: 0.12em;
+		white-space: nowrap;
+	}
+
+	/* ---------- Project grid ---------- */
+	.grid {
+		list-style: none;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+		gap: 1.1rem;
+	}
+	.card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		transition: border-color 0.15s ease, transform 0.15s ease;
+	}
+	.card:hover {
+		border-color: var(--line-strong);
+		transform: translateY(-2px);
+	}
+	.card-top {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: var(--text-xs);
+		letter-spacing: 0.1em;
+	}
+	.idx {
+		color: var(--amber-dim);
+	}
+	.tag {
+		color: var(--bg);
+		background: var(--amber);
+		padding: 0.1rem 0.5rem;
+		font-weight: 700;
+	}
+	.card-name {
+		color: var(--amber);
+		word-break: break-word;
+	}
+	.card-blurb {
+		color: var(--fg-dim);
+		font-size: var(--text-sm);
+		flex: 1;
+	}
+	.card-foot {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border-top: 1px solid var(--amber-faint);
+		padding-top: 0.6rem;
+		font-size: var(--text-sm);
+	}
+
+	/* "More to come" filler card */
+	.placeholder-card {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 2rem;
-	}
-
-	.roles {
-		display: none;
-	}
-
-	.hero img {
-		aspect-ratio: 5 / 4;
-		object-fit: cover;
-		object-position: top;
-		border-radius: 1.5rem;
-		box-shadow: var(--shadow-md);
-	}
-
-	@media (min-width: 50em) {
-		.hero {
-			display: grid;
-			grid-template-columns: 6fr 4fr;
-			padding-inline: 2.5rem;
-			gap: 3.75rem;
-		}
-
-		.roles {
-			margin-top: 0.5rem;
-			display: flex;
-			gap: 0.5rem;
-		}
-
-		.hero img {
-			aspect-ratio: 3 / 4;
-			border-radius: 4.5rem;
-			object-fit: cover;
-		}
-	}
-
-	/* ====================================================== */
-
-	.section {
-		display: grid;
-		gap: 2rem;
-	}
-
-	.with-background {
-		position: relative;
-	}
-
-	.with-background::before {
-		--hero-bg: var(--bg-image-subtle-2);
-
-		content: '';
-		position: absolute;
-		pointer-events: none;
-		left: 50%;
-		width: 100vw;
-		aspect-ratio: calc(2.25 / var(--bg-scale));
-		top: 0;
-		transform: translateY(-75%) translateX(-50%);
-		background:
-			url('/assets/backgrounds/noise.png') top center/220px repeat,
-			var(--hero-bg) center center / var(--bg-gradient-size) no-repeat,
-			var(--gray-999);
-		background-blend-mode: overlay, normal, normal, normal;
-		mix-blend-mode: var(--bg-blend-mode);
-		z-index: -1;
-	}
-
-	.with-background.bg-variant::before {
-		--hero-bg: var(--bg-image-subtle-1);
-	}
-
-	.section-header {
-		justify-self: center;
-		text-align: center;
-		max-width: 50ch;
-		font-size: var(--text-md);
-		color: var(--gray-300);
-	}
-
-	.section-header h3 {
-		font-size: var(--text-2xl);
-	}
-
-	@media (min-width: 50em) {
-		.section {
-			grid-template-columns: repeat(4, 1fr);
-			grid-template-areas: 'header header header header' 'gallery gallery gallery gallery';
-			gap: 5rem;
-		}
-
-		.section.with-cta {
-			grid-template-areas: 'header header header cta' 'gallery gallery gallery gallery';
-		}
-
-		.section-header {
-			grid-area: header;
-			font-size: var(--text-lg);
-		}
-
-		.section-header h3 {
-			font-size: var(--text-4xl);
-		}
-
-		.with-cta .section-header {
-			justify-self: flex-start;
-			text-align: left;
-		}
-
-		.gallery {
-			grid-area: gallery;
-		}
-
-		.cta {
-			grid-area: cta;
-		}
-	}
-
-	/* ====================================================== */
-
-	.mention-card {
-		display: flex;
-		height: 7rem;
 		justify-content: center;
-		align-items: center;
+		gap: 0.35rem;
+		min-height: 11rem;
+		padding: 1.25rem;
+		border: 1px dashed var(--line);
+		background: repeating-linear-gradient(
+			-45deg,
+			transparent 0,
+			transparent 12px,
+			var(--amber-faint) 12px,
+			var(--amber-faint) 13px
+		);
+		color: var(--amber-dim);
 		text-align: center;
-		border: 1px solid var(--gray-800);
-		border-radius: 1.5rem;
-		color: var(--gray-300);
-		background: var(--gradient-subtle);
-		box-shadow: var(--shadow-sm);
+	}
+	.ph-plus {
+		font-size: var(--text-xl);
+		color: var(--amber);
+		line-height: 1;
+	}
+	.ph-text {
+		font-weight: 700;
+		letter-spacing: 0.14em;
+		color: var(--amber);
+	}
+	.ph-sub {
+		font-size: var(--text-xs);
+		letter-spacing: 0.1em;
 	}
 
-	@media (min-width: 50em) {
-		.mention-card {
-			border-radius: 1.5rem;
-			height: 9.5rem;
-		}
+	/* ---------- About / Contact ---------- */
+	.about p + p {
+		margin-top: 0.75rem;
+	}
+	.about .amber {
+		color: var(--amber);
+	}
+	.about strong {
+		color: var(--amber);
+		font-weight: 700;
+	}
+	.about em {
+		color: var(--amber-bright);
+		font-style: italic;
+	}
+	.about-cmd {
+		margin-top: 1.5rem;
+	}
+	.skills {
+		list-style: none;
+		padding: 0;
+		margin-top: 0.6rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		font-size: var(--text-sm);
+		color: var(--fg-dim);
+	}
+	.skills-key {
+		display: inline-block;
+		min-width: 6.5rem;
+		color: var(--bg);
+		background: var(--amber-dim);
+		padding: 0.05rem 0.5rem;
+		margin-right: 0.6rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+	}
+	.placeholder {
+		color: var(--red);
+		font-size: var(--text-sm);
+	}
+	.muted {
+		color: var(--amber-dim);
+	}
+
+	.contact {
+		display: flex;
+		flex-direction: column;
+	}
+	.contact-row {
+		display: flex;
+		gap: 1rem;
+		padding: 0.85rem 0;
+		align-items: baseline;
+		flex-wrap: wrap;
+		border-bottom: 1px solid var(--amber-faint);
+	}
+	.contact-row:last-child {
+		border-bottom: 0;
+	}
+	a.contact-row:hover {
+		text-decoration: none;
+	}
+	.contact-key {
+		color: var(--amber-dim);
+		letter-spacing: 0.12em;
+		min-width: 7rem;
+		font-size: var(--text-sm);
+	}
+	.contact-val {
+		color: var(--fg);
+	}
+	a.contact-row:hover .contact-val {
+		color: var(--amber-bright);
 	}
 </style>

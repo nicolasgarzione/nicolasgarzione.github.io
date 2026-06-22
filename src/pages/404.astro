@@ -1,8 +1,32 @@
 ---
-import Hero from '../components/Hero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Not Found" description="404 Error — this page was not found">
-	<Hero title="Page Not Found" tagline="Not found" />
+<BaseLayout title="404 — Not Found" description="404 Error — this page was not found">
+	<section class="wrapper err">
+		<div class="hazard"></div>
+		<p class="eyebrow">// ERROR 404</p>
+		<h1>SIGNAL LOST</h1>
+		<p class="msg">The requested page could not be located.</p>
+		<p><a class="back" href="/">&lsaquo; RETURN TO INDEX</a></p>
+	</section>
+
+	<style>
+		.err {
+			padding-top: 4rem;
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
+		.hazard {
+			max-width: 12rem;
+		}
+		.msg {
+			color: var(--fg-dim);
+		}
+		.back {
+			font-weight: 700;
+			letter-spacing: 0.1em;
+		}
+	</style>
 </BaseLayout>
